@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#6D28D9" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Aplicativo Empresa – Diagnóstico de Desenvolvimento Humano</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg"></div>
+    <header class="hero">
+      <div class="brand">Aplicativo Empresa</div>
+      <h1>Diagnóstico de Desenvolvimento Humano</h1>
+    </header>
+
+    <main class="container">
+      <form id="diagnosticoForm" name="diagnostico" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="success.html">
+        <input type="hidden" name="form-name" value="diagnostico" />
+        <p class="hidden">
+          <label>Não preencha: <input name="bot-field" /></label>
+        </p>
+
+        <!-- Pergunta 1 -->
+        <section class="card">
+          <h2>1. Do ponto de vista dos Recursos Humanos, qual é hoje a maior preocupação da empresa?</h2>
+          <div class="options" role="radiogroup" aria-label="Maior preocupação">
+            <label class="option">
+              <input type="radio" name="q1" value="Desenvolvimento pessoal dos colaboradores" required />
+              <span>Desenvolvimento pessoal dos colaboradores</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q1" value="Cultura organizacional" />
+              <span>Cultura organizacional</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q1" value="Formação de líderes" />
+              <span>Formação de líderes</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q1" value="Bem-estar e saúde mental" />
+              <span>Bem-estar e saúde mental</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q1" value="Desempenho e produtividade" />
+              <span>Desempenho e produtividade</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q1" value="Aprendizagem contínua" />
+              <span>Aprendizagem contínua</span>
+            </label>
+          </div>
+        </section>
+
+        <!-- Pergunta 2 -->
+        <section class="card">
+          <h2>2. No esforço de desenvolver as pessoas, o principal público-alvo da empresa é:</h2>
+          <div class="options" role="radiogroup" aria-label="Público-alvo">
+            <label class="option">
+              <input type="radio" name="q2" value="Colaboradores em geral" required />
+              <span>Colaboradores em geral</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q2" value="Gestores e lideranças" />
+              <span>Gestores e lideranças</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q2" value="Parceiros externos" />
+              <span>Parceiros externos</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q2" value="Trainees / novos talentos" />
+              <span>Trainees / novos talentos</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q2" value="Público em geral (comunidade, clientes, etc.)" />
+              <span>Público em geral (comunidade, clientes, etc.)</span>
+            </label>
+          </div>
+        </section>
+
+        <!-- Pergunta 3 -->
+        <section class="card">
+          <h2>3. Do ponto de vista da empresa, o desenvolvimento humano deve ser tratado de modo:</h2>
+          <div class="options" role="radiogroup" aria-label="Tratamento do desenvolvimento humano">
+            <label class="option">
+              <input type="radio" name="q3" value="Mais reflexivo (autoconhecimento, valores, propósito)" required />
+              <span>Mais reflexivo (autoconhecimento, valores, propósito)</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q3" value="Mais técnico (competências, habilidades, desempenho)" />
+              <span>Mais técnico (competências, habilidades, desempenho)</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q3" value="Mais comportamental (feedback, performance, relações interpessoais)" />
+              <span>Mais comportamental (feedback, performance, relações interpessoais)</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q3" value="Integrado (combinação das três dimensões anteriores)" />
+              <span>Integrado (combinação das três dimensões anteriores)</span>
+            </label>
+          </div>
+        </section>
+
+        <!-- Pergunta 4 -->
+        <section class="card">
+          <h2>4. A empresa tem algum modelo ou referência que oriente seus valores humanos e culturais?</h2>
+          <div class="options" role="radiogroup" aria-label="Modelo/referência">
+            <label class="option">
+              <input type="radio" name="q4" value="ESG (Environmental, Social and Governance)" required />
+              <span>ESG (Environmental, Social and Governance)</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q4" value="Liderança servidora" />
+              <span>Liderança servidora</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q4" value="Coaching corporativo" />
+              <span>Coaching corporativo</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q4" value="Psicologia positiva" />
+              <span>Psicologia positiva</span>
+            </label>
+            <label class="option option-outro">
+              <input type="radio" name="q4" value="Outro" />
+              <span>Outro (especificar)</span>
+            </label>
+          </div>
+          <div class="outro-wrapper">
+            <input id="q4_outro" name="q4_outro" type="text" placeholder="Descreva aqui" disabled />
+          </div>
+        </section>
+
+
+        <section class="actions card">
+          <div class="buttons">
+            <button type="button" id="saveDraft" class="btn secondary">Salvar rascunho</button>
+            <button type="button" id="clearForm" class="btn ghost">Limpar</button>
+            <button type="submit" class="btn primary">Enviar respostas</button>
+          </div>
+        </section>
+      </form>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <footer class="footer">
+      <small>© Aplicativo Empresa • Feito para dispositivos móveis</small>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+  </html>
