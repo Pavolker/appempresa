@@ -51,6 +51,11 @@
         outroInput.required = true;
       }
       if (obj.q4_outro) outroInput.value = obj.q4_outro;
+      // Restaurar sugestões (texto livre)
+      if (obj.q5_sugestoes) {
+        const ta = form.querySelector('#q5_sugestoes');
+        if (ta) ta.value = obj.q5_sugestoes;
+      }
     } catch (e) {}
   }
 

@@ -73,6 +73,8 @@ body {
 #q4_outro { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); color: var(--text); }
 #q4_outro:disabled { opacity: 0.6; }
 
+textarea { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); color: var(--text); resize: vertical; min-height: 120px; }
+
 .actions .buttons { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
 .btn { padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); font-weight: 600; cursor: pointer; }
 .btn.primary { background: linear-gradient(90deg, var(--primary), var(--accent)); color: #0b0b12; border: none; }
