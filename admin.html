@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#6D28D9" />
+    <title>Painel de Respostas • Aplicativo Empresa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .admin-header {
+        background: linear-gradient(135deg, #6D28D9 0%, #9333EA 100%);
+        color: white;
+        padding: 24px;
+        margin: -16px -16px 24px -16px;
+        border-radius: 16px 16px 0 0;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .stat-card {
+        background: var(--bg-card);
+        padding: 16px;
+        border-radius: 12px;
+        text-align: center;
+        border: 1px solid var(--border);
+      }
+      .stat-number {
+        font-size: 32px;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 8px;
+      }
+      .stat-label {
+        font-size: 12px;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .response-item {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+      .response-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      .response-date {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+      .response-data {
+        display: grid;
+        gap: 12px;
+      }
+      .response-field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .response-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .response-value {
+        font-size: 14px;
+        color: var(--text-primary);
+        line-height: 1.5;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 48px 24px;
+        color: var(--text-secondary);
+      }
+      .empty-state-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+      .actions-bar {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+      }
+      .netlify-info {
+        background: linear-gradient(135deg, #00AD9F 0%, #00C7B7 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+      }
+      .netlify-info h3 {
+        margin: 0 0 12px 0;
+        font-size: 18px;
+      }
+      .netlify-info p {
+        margin: 8px 0;
+        font-size: 14px;
+        opacity: 0.95;
+      }
+      .netlify-info code {
+        background: rgba(0,0,0,0.2);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 12px;
+      }
+      .local-responses {
+        margin-top: 32px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg"></div>
+    <header class="hero">
+      <div class="admin-header">
+        <div class="brand">Aplicativo Empresa</div>
+        <h1 style="margin: 16px 0 0 0; font-size: 24px;">Painel de Respostas</h1>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- Informações sobre Netlify -->
+      <section class="card netlify-info">
+        <h3>📊 Onde encontrar as respostas enviadas</h3>
+        <p><strong>As respostas dos usuários estão armazenadas no Netlify Forms:</strong></p>
+        <ol style="margin: 12px 0; padding-left: 20px; font-size: 14px;">
+          <li>Acesse o painel do <strong>Netlify</strong> (netlify.com)</li>
+          <li>Vá para <strong>Forms</strong> no menu lateral</li>
+          <li>Procure pelo formulário chamado <code>diagnostico</code></li>
+          <li>Clique para ver todas as submissões</li>
+          <li>Você pode exportar os dados em CSV ou JSON</li>
+        </ol>
+        <p style="margin-top: 12px; font-size: 13px; opacity: 0.9;">
+          <strong>Nota:</strong> As respostas mostradas abaixo são apenas rascunhos salvos localmente no navegador. 
+          As respostas enviadas pelos usuários estão no Netlify.
+        </p>
+      </section>
+
+      <!-- Estatísticas -->
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-number" id="totalRascunhos">0</div>
+          <div class="stat-label">Rascunhos Locais</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="totalEnviados">-</div>
+          <div class="stat-label">Total Enviados</div>
+        </div>
+      </div>
+
+      <!-- Barra de ações -->
+      <section class="actions-bar">
+        <button class="btn primary" id="refreshBtn">🔄 Atualizar</button>
+        <button class="btn secondary" id="exportBtn">📥 Exportar JSON</button>
+        <button class="btn ghost" id="clearLocalBtn">🗑️ Limpar Rascunhos Locais</button>
+        <a href="index.html" class="btn secondary">← Voltar ao Formulário</a>
+      </section>
+
+      <!-- Respostas locais (rascunhos) -->
+      <section class="local-responses">
+        <h2 style="margin-bottom: 16px;">Rascunhos Salvos Localmente</h2>
+        <div id="responsesContainer">
+          <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <p>Nenhum rascunho local encontrado.</p>
+            <p style="font-size: 12px; margin-top: 8px;">Os rascunhos são salvos apenas no dispositivo do usuário.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <footer class="footer">
+      <small>© Aplicativo Empresa • Painel Administrativo</small>
+    </footer>
+
+    <script src="admin.js"></script>
+  </body>
+</html>
+

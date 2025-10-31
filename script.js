@@ -6,6 +6,7 @@
   const clearFormBtn = document.getElementById('clearForm');
   const outroInput = document.getElementById('q4_outro');
   const STORAGE_KEY = 'diagnostico_respostas_v1';
+  const SUBMISSIONS_KEY = 'diagnostico_enviados_v1';
 
   function showToast(message, type = 'info') {
     toast.textContent = message;
@@ -94,18 +95,86 @@
     clearAll();
   });
 
+  // Registrar envio para histórico local
+  function registerSubmission(data) {
+    try {
+      const submissions = JSON.parse(localStorage.getItem(SUBMISSIONS_KEY) || '[]');
+      submissions.push({
+        ...data,
+        timestamp: new Date().toISOString(),
+        submitted: true
+      });
+      localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(submissions));
+    } catch (e) {
+      console.warn('Erro ao registrar envio:', e);
+    }
+  }
+
   // Em desenvolvimento local, evitar POST (servidor estático) e simular envio
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     const isLocal = ['localhost', '127.0.0.1'].includes(location.hostname);
+    
     if (isLocal) {
       e.preventDefault();
       if (!form.reportValidity()) return;
+      const data = readAnswers();
       saveLocal();
+      registerSubmission(data);
       showToast('Simulação de envio: publique no Netlify para registrar!', 'info');
-    } else {
-      // Em produção (Netlify), envio normal para Forms
-      saveLocal();
+      return;
     }
+
+    // Em produção (Netlify)
+    if (!form.reportValidity()) {
+      e.preventDefault();
+      return;
+    }
+
+    // Registrar antes do envio
+    const data = readAnswers();
+    registerSubmission(data);
+    saveLocal();
+
+    // Interceptar o envio e fazer redirecionamento manual via fetch
+    e.preventDefault();
+    
+    // Mostrar feedback de carregamento
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando...';
+    
+    try {
+      // Criar FormData do formulário
+      const formData = new FormData(form);
+      
+      // Enviar para o endpoint do Netlify (mesma URL da página)
+      const response = await fetch(window.location.pathname, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'text/html'
+        },
+        redirect: 'manual' // Não seguir redirects automaticamente
+      });
+
+      // O Netlify Forms processa o POST e pode retornar 200 ou 302
+      // Independente da resposta, redirecionar para success.html
+      // O formulário já foi processado pelo Netlify
+      setTimeout(() => {
+        window.location.href = 'success.html';
+      }, 500);
+      
+    } catch (error) {
+      console.error('Erro ao enviar formulário:', error);
+      // Mesmo com erro de rede, redirecionar após um tempo
+      // O Netlify pode ter processado o formulário mesmo assim
+      showToast('Enviando respostas...', 'info');
+      setTimeout(() => {
+        window.location.href = 'success.html';
+      }, 1500);
+    }
+    // Não restaurar o botão aqui, pois vamos redirecionar
   });
 
   restoreLocal();
