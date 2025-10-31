@@ -128,7 +128,7 @@
   }
 
   // Em desenvolvimento local, evitar POST (servidor estático) e simular envio
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', (e) => {
     const isLocal = ['localhost', '127.0.0.1'].includes(location.hostname);
     
     if (isLocal) {
@@ -141,7 +141,9 @@
       return;
     }
 
-    // Em produção (Netlify)
+    // Em produção (Netlify) - DEIXAR O FORMULÁRIO FAZER POST NORMAL
+    // Não usar preventDefault para que o Netlify Forms processe corretamente
+    
     if (!form.reportValidity()) {
       e.preventDefault();
       return;
@@ -150,52 +152,33 @@
     // Registrar antes do envio
     const data = readAnswers();
     registerSubmission(data);
-    saveLocal();
-
-    // Interceptar o envio e fazer redirecionamento manual via fetch
-    e.preventDefault();
     
-    // Mostrar feedback de carregamento
+    // Limpar rascunho antes de enviar (será limpo mesmo se houver erro)
+    localStorage.removeItem(STORAGE_KEY);
+    
+    // IMPORTANTE: O Netlify Forms não processa campos disabled
+    // Se q4_outro estiver desabilitado e não for necessário, remover o name
+    // para que não seja enviado com valor vazio
+    if (outroInput.disabled) {
+      // Se o campo está desabilitado, não é necessário (Outro não foi selecionado)
+      // Remover o atributo name para não enviar campo vazio
+      outroInput.removeAttribute('name');
+    } else {
+      // Se está habilitado, garantir que tem o name
+      if (!outroInput.hasAttribute('name')) {
+        outroInput.setAttribute('name', 'q4_outro');
+      }
+    }
+    
+    // Mostrar feedback de carregamento (mas não impedir o envio)
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
     submitBtn.disabled = true;
     submitBtn.textContent = 'Enviando...';
     
-    try {
-      // Criar FormData do formulário
-      const formData = new FormData(form);
-      
-      // Enviar para o endpoint do Netlify (mesma URL da página)
-      const response = await fetch(window.location.pathname, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Accept': 'text/html'
-        },
-        redirect: 'manual' // Não seguir redirects automaticamente
-      });
-
-      // O Netlify Forms processa o POST e pode retornar 200 ou 302
-      // Independente da resposta, redirecionar para success.html
-      // O formulário já foi processado pelo Netlify
-      // Limpar rascunho após envio bem-sucedido
-      localStorage.removeItem(STORAGE_KEY);
-      setTimeout(() => {
-        window.location.href = 'success.html';
-      }, 500);
-      
-    } catch (error) {
-      console.error('Erro ao enviar formulário:', error);
-      // Mesmo com erro de rede, redirecionar após um tempo
-      // O Netlify pode ter processado o formulário mesmo assim
-      // Limpar rascunho mesmo em caso de erro (pode ter sido enviado)
-      localStorage.removeItem(STORAGE_KEY);
-      showToast('Enviando respostas...', 'info');
-      setTimeout(() => {
-        window.location.href = 'success.html';
-      }, 1500);
-    }
-    // Não restaurar o botão aqui, pois vamos redirecionar
+    // Deixar o formulário fazer o POST tradicional
+    // O Netlify Forms processará automaticamente
+    // O action="success.html" já está configurado no HTML para redirecionar
   });
 
   // Mostrar notificação de rascunho se existir, mas NÃO restaurar automaticamente
