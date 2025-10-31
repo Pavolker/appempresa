@@ -20,6 +20,14 @@
     </header>
 
     <main class="container">
+      <div id="draftNotice" class="card" style="display: none; background: rgba(109, 40, 217, 0.15); border: 1px solid var(--primary); margin-bottom: 16px;">
+        <p style="margin: 0; font-size: 14px;">
+          📝 Você tem um rascunho salvo. 
+          <button type="button" id="restoreDraftBtn" style="background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; margin-left: 8px;">
+            Restaurar rascunho
+          </button>
+        </p>
+      </div>
       <form id="diagnosticoForm" name="diagnostico" method="POST" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="diagnostico" />
         <p class="hidden">

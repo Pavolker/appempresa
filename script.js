@@ -60,12 +60,29 @@
     } catch (e) {}
   }
 
+  function hasDraft() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    try {
+      const obj = JSON.parse(raw);
+      // Verificar se há pelo menos uma resposta salva
+      return obj && (obj.q1 || obj.q2 || obj.q3 || obj.q4 || obj.q4_outro || obj.q5_sugestoes);
+    } catch (e) {
+      return false;
+    }
+  }
+
   function clearAll() {
     form.reset();
     outroInput.disabled = true;
     outroInput.required = false;
     outroInput.value = '';
     localStorage.removeItem(STORAGE_KEY);
+    // Esconder notificação de rascunho se existir
+    const draftNotice = document.getElementById('draftNotice');
+    if (draftNotice) {
+      draftNotice.style.display = 'none';
+    }
     showToast('Formulário limpo', 'success');
   }
 
@@ -161,6 +178,8 @@
       // O Netlify Forms processa o POST e pode retornar 200 ou 302
       // Independente da resposta, redirecionar para success.html
       // O formulário já foi processado pelo Netlify
+      // Limpar rascunho após envio bem-sucedido
+      localStorage.removeItem(STORAGE_KEY);
       setTimeout(() => {
         window.location.href = 'success.html';
       }, 500);
@@ -169,6 +188,8 @@
       console.error('Erro ao enviar formulário:', error);
       // Mesmo com erro de rede, redirecionar após um tempo
       // O Netlify pode ter processado o formulário mesmo assim
+      // Limpar rascunho mesmo em caso de erro (pode ter sido enviado)
+      localStorage.removeItem(STORAGE_KEY);
       showToast('Enviando respostas...', 'info');
       setTimeout(() => {
         window.location.href = 'success.html';
@@ -177,5 +198,38 @@
     // Não restaurar o botão aqui, pois vamos redirecionar
   });
 
-  restoreLocal();
+  // Mostrar notificação de rascunho se existir, mas NÃO restaurar automaticamente
+  const draftNotice = document.getElementById('draftNotice');
+  const restoreDraftBtn = document.getElementById('restoreDraftBtn');
+  
+  if (hasDraft()) {
+    // Mostrar notificação de rascunho disponível
+    if (draftNotice) {
+      draftNotice.style.display = 'block';
+    }
+    
+    // Botão para restaurar rascunho
+    if (restoreDraftBtn) {
+      restoreDraftBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        restoreLocal();
+        showToast('Rascunho restaurado com sucesso', 'success');
+        if (draftNotice) {
+          draftNotice.style.display = 'none';
+        }
+      });
+    }
+  }
+
+  // Restaurar automaticamente apenas se vier da página de sucesso com parâmetro
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('restore') === 'true') {
+    restoreLocal();
+    showToast('Rascunho restaurado', 'success');
+    if (draftNotice) {
+      draftNotice.style.display = 'none';
+    }
+    // Remover o parâmetro da URL
+    window.history.replaceState({}, '', window.location.pathname);
+  }
 })();
